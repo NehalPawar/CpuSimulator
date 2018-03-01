@@ -5,6 +5,8 @@
  */
 package utilitytypes;
 
+import java.util.EnumSet;
+
 /**
  * Enum for all opcodes to be implemented by the CPU simulator.
  * 
@@ -59,4 +61,58 @@ public enum EnumOpcode {
         }
         return op;
     }
+    
+    static final EnumSet<EnumOpcode> writebackSet = 
+            EnumSet.of(ADD, SUB, AND, OR, 
+            SHL, ASR, LSR, XOR, CMP, ROL, ROR, MULS, MULU, DIVS, DIVU,
+            CALL, LOAD, MOVC);
+    static final EnumSet<EnumOpcode> oper0SourceSet = 
+            EnumSet.of(BRA, OUT, STORE, JMP);
+    static final EnumSet<EnumOpcode> branchSet = 
+            EnumSet.of(BRA, JMP, CALL);
+
+    /**
+     * Does the given opcode produce a value that must be written back to the
+     * register file?
+     * 
+     * @param op
+     * @return
+     */
+    public static boolean needsWriteback(EnumOpcode op) {
+        return writebackSet.contains(op);
+    }
+    
+    public boolean needsWriteback() {
+        return writebackSet.contains(this);
+    }
+
+    /**
+     * Is the first operand actually a source for the given opcode? 
+     * (Instead of being the the destination as is the case for most
+     * instructions.)
+     * 
+     * @param op
+     * @return
+     */
+    public static boolean oper0IsSource(EnumOpcode op) {
+        return oper0SourceSet.contains(op);
+    }
+    
+    public boolean oper0IsSource() {
+        return oper0SourceSet.contains(this);
+    }
+
+    /**
+     * Returns true if the instruction is a branch (BRA, JMP, CALL).
+     * @param op
+     * @return
+     */
+    public static boolean isBranch(EnumOpcode op) {
+        return branchSet.contains(op);
+    }
+
+    public boolean isBranch() {
+        return branchSet.contains(this);
+    }
+    
 }
